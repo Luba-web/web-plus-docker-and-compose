@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+
+  backend:
+    container_name: 'backend'
+    build: ./backend
+    networks:
+      - backend
+    env_file:
+      - .env
+    restart: on-failure
+    ports:
+      - '4000:3000'
+    depends_on:
+      - database
+
+  frontend:
+    container_name: 'frontend'
+    build: ./frontend
+    restart: on-failure
+    ports:
+      - '8081:80'
+
+  database:
+    container_name: 'database'
+    image: postgres:12-alpine
+    networks:
+      - backend
+    env_file:
+      - .env
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pg_data:/var/lib/postgresql/data/pgdata
+  
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+
+volumes:
+  pg_data:
+    driver: local
+
+networks:
+  backend:
