@@ -9,7 +9,7 @@ services:
       - backend
     env_file:
       - .env
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - '4000:3000'
     depends_on:
@@ -18,7 +18,7 @@ services:
   frontend:
     container_name: 'frontend'
     build: ./frontend
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - '8081:80'
 
@@ -29,7 +29,7 @@ services:
       - backend
     env_file:
       - .env
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - 5432:5432
     environment:
